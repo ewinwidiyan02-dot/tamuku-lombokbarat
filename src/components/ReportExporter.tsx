@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogFooter,
   DialogDescription,
-  DialogTrigger, // Added DialogTrigger import
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import { FileDown, KeyRound, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import * as XLSX from "xlsx";
 import { format } from "date-fns";
+import { id } from "date-fns/locale"; // Import locale for Indonesian month names
 
 const CORRECT_PASSWORD = "17041958";
 
@@ -67,6 +68,7 @@ export const ReportExporter = () => {
     try {
       const today = new Date();
       let startDate: Date;
+      let endDate: Date = today; // Default endDate to today (current time)
       let reportName: string;
 
       // Set today's date to the beginning of the day for accurate filtering
@@ -79,14 +81,30 @@ export const ReportExporter = () => {
         startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6);
         startDate.setHours(0, 0, 0, 0); // Ensure it starts from the beginning of the day
         reportName = `Laporan_Tamu_Mingguan_${format(today, "yyyy-MM-dd")}`;
-      } else { // monthly
+      } else if (reportType === "monthly") {
         startDate = new Date(today.getFullYear(), today.getMonth(), 1);
         startDate.setHours(0, 0, 0, 0); // Ensure it starts from the beginning of the month
-        reportName = `Laporan_Tamu_Bulanan_${format(today, "MMMM-yyyy")}`;
+        reportName = `Laporan_Tamu_Bulanan_${format(today, "MMMM-yyyy", { locale: id })}`;
+      } else if (reportType === "previousMonth") {
+        startDate = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        endDate = new Date(today.getFullYear(), today.getMonth(), 0); // Last day of previous month
+        endDate.setHours(23, 59, 59, 999); // End of the day
+        reportName = `Laporan_Tamu_Bulan_Sebelumnya_${format(startDate, "MMMM-yyyy", { locale: id })}`;
+      } else if (reportType === "twoMonthsAgo") {
+        startDate = new Date(today.getFullYear(), today.getMonth() - 2, 1);
+        endDate = new Date(today.getFullYear(), today.getMonth() - 1, 0); // Last day of two months ago
+        endDate.setHours(23, 59, 59, 999); // End of the day
+        reportName = `Laporan_Tamu_Dua_Bulan_Lalu_${format(startDate, "MMMM-yyyy", { locale: id })}`;
+      } else {
+        // Fallback or error handling for unknown reportType
+        toast.error("Jenis laporan tidak valid.");
+        setIsLoading(false);
+        toast.dismiss(toastId);
+        return;
       }
 
       toast.loading("Mengambil data tamu...", { id: toastId });
-      const guests = await fetchGuestDataForReport(startDate, today); // endDate is always 'today' (current time)
+      const guests = await fetchGuestDataForReport(startDate, endDate);
 
       if (guests.length === 0) {
         toast.info("Tidak Ada Data", {
@@ -109,7 +127,7 @@ export const ReportExporter = () => {
         "Bidang": guest.bidang || "-",
         "Nomor Kontak": guest.contact_number || "-",
         "Keperluan": guest.purpose,
-        "Tanggal Kunjungan": format(new Date(guest.created_at), "dd MMMM yyyy, HH:mm"),
+        "Tanggal Kunjungan": format(new Date(guest.created_at), "dd MMMM yyyy, HH:mm", { locale: id }),
       }));
 
       const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -170,6 +188,8 @@ export const ReportExporter = () => {
                 <SelectItem value="daily">Laporan Harian (hari ini)</SelectItem>
                 <SelectItem value="weekly">Laporan Mingguan (7 hari terakhir)</SelectItem>
                 <SelectItem value="monthly">Laporan Bulanan (bulan ini)</SelectItem>
+                <SelectItem value="previousMonth">Laporan Bulan Sebelumnya</SelectItem>
+                <SelectItem value="twoMonthsAgo">Laporan Dua Bulan Lalu</SelectItem>
               </SelectContent>
             </Select>
           </div>
