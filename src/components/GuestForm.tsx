@@ -51,6 +51,7 @@ const purposeOptions = [
   "Undangan Khusus",
   "Seremoni",
   "Ekspedisi Surat",
+  "Izin Penelitian", // Opsi baru ditambahkan di sini
 ];
 
 const bidangOptions = [
