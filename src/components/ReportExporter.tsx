@@ -52,7 +52,12 @@ export const ReportExporter = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [reportType, setReportType] = useState("daily"); // Default to daily
+  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear().toString());
   const [isLoading, setIsLoading] = useState(false);
+
+  // Generate years from 2024 to current year + 1
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: (currentYear + 1) - 2024 + 1 }, (_, i) => (2024 + i).toString()).reverse();
 
   const handleExport = async () => {
     if (password !== CORRECT_PASSWORD) {
@@ -90,11 +95,11 @@ export const ReportExporter = () => {
         endDate = new Date(today.getFullYear(), today.getMonth(), 0); // Last day of previous month
         endDate.setHours(23, 59, 59, 999); // End of the day
         reportName = `Laporan_Tamu_Bulan_Sebelumnya_${format(startDate, "MMMM-yyyy", { locale: id })}`;
-      } else if (reportType === "twoMonthsAgo") {
-        startDate = new Date(today.getFullYear(), today.getMonth() - 2, 1);
-        endDate = new Date(today.getFullYear(), today.getMonth() - 1, 0); // Last day of two months ago
-        endDate.setHours(23, 59, 59, 999); // End of the day
-        reportName = `Laporan_Tamu_Dua_Bulan_Lalu_${format(startDate, "MMMM-yyyy", { locale: id })}`;
+      } else if (reportType === "annual") {
+        startDate = new Date(parseInt(selectedYear), 0, 1); // Jan 1st
+        endDate = new Date(parseInt(selectedYear), 11, 31); // Dec 31st
+        endDate.setHours(23, 59, 59, 999);
+        reportName = `Laporan_Tamu_Tahunan_${selectedYear}`;
       } else {
         // Fallback or error handling for unknown reportType
         toast.error("Jenis laporan tidak valid.");
@@ -189,10 +194,28 @@ export const ReportExporter = () => {
                 <SelectItem value="weekly">Laporan Mingguan (7 hari terakhir)</SelectItem>
                 <SelectItem value="monthly">Laporan Bulanan (bulan ini)</SelectItem>
                 <SelectItem value="previousMonth">Laporan Bulan Sebelumnya</SelectItem>
-                <SelectItem value="twoMonthsAgo">Laporan Dua Bulan Lalu</SelectItem>
+                <SelectItem value="annual">Cetak Laporan Tahunan</SelectItem>
               </SelectContent>
             </Select>
           </div>
+
+          {reportType === "annual" && (
+            <div className="space-y-2">
+              <Label htmlFor="year">Pilih Tahun</Label>
+              <Select value={selectedYear} onValueChange={setSelectedYear}>
+                <SelectTrigger id="year">
+                  <SelectValue placeholder="Pilih tahun" />
+                </SelectTrigger>
+                <SelectContent>
+                  {years.map((year) => (
+                    <SelectItem key={year} value={year}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
             <div className="relative">
