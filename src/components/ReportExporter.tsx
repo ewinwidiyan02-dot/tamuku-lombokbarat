@@ -24,7 +24,7 @@ const CORRECT_PASSWORD = "17041958";
 const fetchGuestDataForReport = async (startDate: Date, endDate: Date) => {
   const { data, error } = await supabase
     .from("guests")
-    .select("reg_number, first_name, last_name, nik, origin, position, bidang, purpose, created_at, contact_number, satisfaction")
+    .select("reg_number, first_name, last_name, origin, purpose, created_at, contact_number, satisfaction")
     .gte("created_at", startDate.toISOString())
     .lte("created_at", endDate.toISOString())
     .order("created_at", { ascending: false });
@@ -39,10 +39,7 @@ interface FormattedGuestData {
   "No.": number;
   "No. Registrasi": string;
   "Nama Lengkap": string;
-  NIK: string;
   "Instansi/Lembaga/Domisili": string;
-  Jabatan: string;
-  Bidang: string;
   "Nomor Kontak": string;
   Keperluan: string;
   "Kepuasan Layanan": string;
@@ -127,10 +124,7 @@ export const ReportExporter = () => {
         "No.": guests.length - index,
         "No. Registrasi": guest.reg_number,
         "Nama Lengkap": `${guest.first_name} ${guest.last_name}`,
-        "NIK": guest.nik || "-",
         "Instansi/Lembaga/Domisili": guest.origin,
-        "Jabatan": guest.position || "-",
-        "Bidang": guest.bidang || "-",
         "Nomor Kontak": guest.contact_number || "-",
         "Keperluan": guest.purpose,
         "Kepuasan Layanan": guest.satisfaction || "-",
@@ -144,9 +138,9 @@ export const ReportExporter = () => {
       // Add Header
       XLSX.utils.sheet_add_aoa(worksheet, [["Buku Tamu Bapperida Lombok Barat"]], { origin: "A1" });
 
-      // Merge Header (A1 to J1 - 10 columns)
+      // Merge Header (A1 to H1 - 8 columns)
       if (!worksheet["!merges"]) worksheet["!merges"] = [];
-      worksheet["!merges"].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 9 } });
+      worksheet["!merges"].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 7 } });
 
       // Style Header
       if (worksheet["A1"]) {
