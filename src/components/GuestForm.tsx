@@ -16,6 +16,7 @@ interface GuestData {
   origin: string;
   contactNumber: string;
   purpose: string;
+  satisfaction: string;
 }
 
 // This interface matches the Supabase table schema
@@ -26,6 +27,7 @@ interface SupabaseGuestData {
   origin: string;
   contact_number: string;
   purpose: string;
+  satisfaction: string | null;
 }
 
 // Fungsi untuk menyimpan data tamu ke Supabase
@@ -46,6 +48,14 @@ const purposeOptions = [
   "Seremoni",
   "Ekspedisi Surat",
   "Izin Penelitian", // Opsi baru ditambahkan di sini
+];
+
+const satisfactionOptions = [
+  "Sangat Puas",
+  "Puas",
+  "Cukup Puas",
+  "Kurang Puas",
+  "Tidak Puas",
 ];
 
 
@@ -88,7 +98,8 @@ export const GuestForm = () => {
     lastName: "",
     origin: "",
     contactNumber: "",
-    purpose: ""
+    purpose: "",
+    satisfaction: ""
   });
 
   useEffect(() => {
@@ -117,7 +128,8 @@ export const GuestForm = () => {
         lastName: "",
         origin: "",
         contactNumber: "",
-        purpose: ""
+        purpose: "",
+        satisfaction: ""
       });
       queryClient.invalidateQueries({ queryKey: ["dashboardData"] });
     },
@@ -152,6 +164,7 @@ export const GuestForm = () => {
       origin: formData.origin,
       contact_number: formData.contactNumber,
       purpose: formData.purpose,
+      satisfaction: formData.satisfaction || null,
     };
 
     mutation.mutate(guestDataForSupabase);
@@ -236,6 +249,25 @@ export const GuestForm = () => {
               </SelectTrigger>
               <SelectContent>
                 {purposeOptions.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="satisfaction">Nilai Kepuasan Layanan</Label>
+            <Select
+              value={formData.satisfaction}
+              onValueChange={(value) => handleInputChange("satisfaction", value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seberapa puas Anda dengan layanan kami?" />
+              </SelectTrigger>
+              <SelectContent>
+                {satisfactionOptions.map((option) => (
                   <SelectItem key={option} value={option}>
                     {option}
                   </SelectItem>

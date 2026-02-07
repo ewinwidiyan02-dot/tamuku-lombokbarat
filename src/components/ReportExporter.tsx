@@ -24,7 +24,7 @@ const CORRECT_PASSWORD = "17041958";
 const fetchGuestDataForReport = async (startDate: Date, endDate: Date) => {
   const { data, error } = await supabase
     .from("guests")
-    .select("reg_number, first_name, last_name, nik, origin, position, bidang, purpose, created_at, contact_number")
+    .select("reg_number, first_name, last_name, nik, origin, position, bidang, purpose, created_at, contact_number, satisfaction")
     .gte("created_at", startDate.toISOString())
     .lte("created_at", endDate.toISOString())
     .order("created_at", { ascending: false });
@@ -45,6 +45,7 @@ interface FormattedGuestData {
   Bidang: string;
   "Nomor Kontak": string;
   Keperluan: string;
+  "Kepuasan Layanan": string;
   "Tanggal Kunjungan": string;
 }
 
@@ -132,6 +133,7 @@ export const ReportExporter = () => {
         "Bidang": guest.bidang || "-",
         "Nomor Kontak": guest.contact_number || "-",
         "Keperluan": guest.purpose,
+        "Kepuasan Layanan": guest.satisfaction || "-",
         "Tanggal Kunjungan": format(new Date(guest.created_at), "dd MMMM yyyy, HH:mm", { locale: id }),
       }));
 
