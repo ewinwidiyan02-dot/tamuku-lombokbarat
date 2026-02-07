@@ -10,8 +10,8 @@ const Index = () => {
 
         <div className="w-full max-w-4xl mx-auto my-8 overflow-hidden text-primary">
           <div className="whitespace-nowrap animate-marquee py-3">
-            <span className="mx-8 text-lg font-medium">Selamat Datang di BAPPEDA Kabupaten Lombok Barat</span>
-            <span className="mx-8 text-lg font-medium">Selamat Datang di BAPPEDA Kabupaten Lombok Barat</span>
+            <span className="mx-8 text-lg font-medium">Selamat Datang di Bapperida Kabupaten Lombok Barat</span>
+            <span className="mx-8 text-lg font-medium">Selamat Datang di Bapperida Kabupaten Lombok Barat</span>
           </div>
         </div>
 

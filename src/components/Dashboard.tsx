@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, TrendingUp, Calendar, BarChart3, BookMarked } from "lucide-react";
+import { Users, TrendingUp, Calendar, BarChart3 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -75,10 +75,10 @@ export const Dashboard = () => {
           <img src="/logo.png" alt="Logo Lombok Barat" className="h-24 w-auto object-contain" />
         </div>
         <h1 className="text-2xl md:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
-          e-Guest
+          Buku Tamu Bapperida
         </h1>
         <p className="text-muted-foreground">
-          Buku Tamu Elektronik - Bappeda Kabupaten Lombok Barat
+          Kabupaten Lombok Barat
         </p>
       </div>
 
@@ -144,7 +144,7 @@ export const Dashboard = () => {
                   <div key={day.date} className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground w-8">{day.day}</span>
                     <div className="flex-1 mx-2 bg-muted rounded-full h-2 overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-gradient-primary rounded-full transition-all duration-300"
                         style={{ width: `${(day.guests / maxGuests) * 100}%` }}
                       />
