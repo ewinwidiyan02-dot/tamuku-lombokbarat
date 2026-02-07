@@ -72,7 +72,7 @@ export const Dashboard = () => {
     <div className="w-full mb-8">
       <div className="text-center mb-6">
         <div className="inline-block p-4 bg-gradient-primary rounded-2xl shadow-medium mb-4">
-          <BookMarked className="h-12 w-12 text-primary-foreground" />
+          <img src="/logo.png" alt="Logo Lombok Barat" className="h-24 w-auto object-contain" />
         </div>
         <h1 className="text-2xl md:text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
           e-Guest
