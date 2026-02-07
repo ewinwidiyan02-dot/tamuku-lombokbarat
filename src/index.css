@@ -17,22 +17,22 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 27%;
 
-    --primary: 210 100% 56%;
+    --primary: 198 100% 45%; /* Blue Shield */
     --primary-foreground: 0 0% 100%;
     
-    --primary-light: 210 100% 65%;
-    --primary-dark: 210 100% 47%;
+    --primary-light: 198 100% 55%;
+    --primary-dark: 198 100% 35%;
 
-    --secondary: 142 69% 58%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 57 100% 50%; /* Yellow Border */
+    --secondary-foreground: 215 25% 27%; /* Dark text for contrast */
     
-    --secondary-light: 142 69% 68%;
-    --secondary-dark: 142 69% 48%;
+    --secondary-light: 57 100% 60%;
+    --secondary-dark: 57 100% 40%;
 
     --muted: 210 30% 96%;
     --muted-foreground: 215 15% 57%;
 
-    --accent: 42 90% 50%;
+    --accent: 357 75% 48%; /* Red Banner */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
@@ -42,8 +42,8 @@ All colors MUST be HSL.
     --input: 210 20% 95%;
     --ring: 210 100% 56%;
     
-    --gradient-primary: linear-gradient(135deg, hsl(210 100% 56%), hsl(210 100% 65%));
-    --gradient-secondary: linear-gradient(135deg, hsl(142 69% 58%), hsl(142 69% 68%));
+    --gradient-primary: linear-gradient(135deg, hsl(198 100% 45%), hsl(198 100% 55%));
+    --gradient-secondary: linear-gradient(135deg, hsl(57 100% 50%), hsl(57 100% 60%));
     --gradient-bg: linear-gradient(180deg, hsl(205 100% 96%), hsl(0 0% 100%));
     
     --shadow-soft: 0 2px 8px -2px hsl(215 25% 27% / 0.1);
