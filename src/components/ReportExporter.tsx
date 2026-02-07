@@ -15,7 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { FileDown, KeyRound, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import * as XLSX from "xlsx";
+import * as XLSX from "xlsx-js-style";
 import { format } from "date-fns";
 import { id } from "date-fns/locale"; // Import locale for Indonesian month names
 
@@ -135,9 +135,24 @@ export const ReportExporter = () => {
         "Tanggal Kunjungan": format(new Date(guest.created_at), "dd MMMM yyyy, HH:mm", { locale: id }),
       }));
 
-      const worksheet = XLSX.utils.json_to_sheet(formattedData);
+      const worksheet = XLSX.utils.json_to_sheet(formattedData, { origin: "A3" });
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Data Tamu");
+
+      // Add Header
+      XLSX.utils.sheet_add_aoa(worksheet, [["Buku Tamu Bapperida Lombok Barat"]], { origin: "A1" });
+
+      // Merge Header (A1 to J1 - 10 columns)
+      if (!worksheet["!merges"]) worksheet["!merges"] = [];
+      worksheet["!merges"].push({ s: { r: 0, c: 0 }, e: { r: 0, c: 9 } });
+
+      // Style Header
+      if (worksheet["A1"]) {
+        worksheet["A1"].s = {
+          font: { bold: true, sz: 16 },
+          alignment: { horizontal: "center", vertical: "center" }
+        };
+      }
 
       const colWidths = Object.keys(formattedData[0]).map(key => ({
         wch: Math.max(
