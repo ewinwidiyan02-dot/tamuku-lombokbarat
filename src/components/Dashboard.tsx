@@ -151,7 +151,7 @@ export const Dashboard = () => {
                         paddingAngle={2}
                         dataKey="value"
                       >
-                        {data.satisfactionData.map((entry, index) => (
+                        {data.satisfactionData.map((_, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
