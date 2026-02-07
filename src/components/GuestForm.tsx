@@ -176,97 +176,97 @@ export const GuestForm = () => {
               className="bg-muted font-mono"
             />
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">Nama Depan *</Label>
+              <Input
+                id="firstName"
+                value={formData.firstName}
+                onChange={(e) => handleInputChange("firstName", e.target.value)}
+                placeholder="Masukkan nama depan"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">Nama Belakang *</Label>
+              <Input
+                id="lastName"
+                value={formData.lastName}
+                onChange={(e) => handleInputChange("lastName", e.target.value)}
+                placeholder="Masukkan nama belakang"
+                required
+              />
+            </div>
+          </div>
+
           <div className="space-y-2">
-            <Label htmlFor="firstName">Nama Depan *</Label>
+            <Label htmlFor="origin">Instansi/Lembaga/Alamat Domisili *</Label>
             <Input
-              id="firstName"
-              value={formData.firstName}
-              onChange={(e) => handleInputChange("firstName", e.target.value)}
-              placeholder="Masukkan nama depan"
+              id="origin"
+              value={formData.origin}
+              onChange={(e) => handleInputChange("origin", e.target.value)}
+              placeholder="Instansi/Lembaga/Alamat"
               required
             />
           </div>
+
+
+
           <div className="space-y-2">
-            <Label htmlFor="lastName">Nama Belakang *</Label>
+            <Label htmlFor="contactNumber">Nomor Kontak (Whatsapp) *</Label>
             <Input
-              id="lastName"
-              value={formData.lastName}
-              onChange={(e) => handleInputChange("lastName", e.target.value)}
-              placeholder="Masukkan nama belakang"
+              id="contactNumber"
+              value={formData.contactNumber}
+              onChange={(e) => handleInputChange("contactNumber", e.target.value)}
+              placeholder="Nomor Whatsapp"
               required
             />
           </div>
-        </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="origin">Instansi/Lembaga/Alamat Domisili *</Label>
-          <Input
-            id="origin"
-            value={formData.origin}
-            onChange={(e) => handleInputChange("origin", e.target.value)}
-            placeholder="Instansi/Lembaga/Alamat"
-            required
-          />
-        </div>
+          <div className="space-y-2">
+            <Label htmlFor="purpose">Keperluan *</Label>
+            <Select
+              value={formData.purpose}
+              onValueChange={(value) => handleInputChange("purpose", value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Pilih tujuan kunjungan Anda..." />
+              </SelectTrigger>
+              <SelectContent>
+                {purposeOptions.map((option) => (
+                  <SelectItem key={option} value={option}>
+                    {option}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-
-
-        <div className="space-y-2">
-          <Label htmlFor="contactNumber">Nomor Kontak (Whatsapp) *</Label>
-          <Input
-            id="contactNumber"
-            value={formData.contactNumber}
-            onChange={(e) => handleInputChange("contactNumber", e.target.value)}
-            placeholder="Nomor Whatsapp"
-            required
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="purpose">Keperluan *</Label>
-          <Select
-            value={formData.purpose}
-            onValueChange={(value) => handleInputChange("purpose", value)}
+          <Button
+            type="submit"
+            className="w-full transition-all duration-300 bg-accent text-accent-foreground hover:bg-accent/90"
+            disabled={mutation.isPending}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Pilih tujuan kunjungan Anda..." />
-            </SelectTrigger>
-            <SelectContent>
-              {purposeOptions.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+            {mutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Menyimpan...
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Simpan Kunjungan
+              </>
+            )}
+          </Button>
+        </form>
 
-        <Button
-          type="submit"
-          className="w-full transition-all duration-300 bg-accent text-accent-foreground hover:bg-accent/90"
-          disabled={mutation.isPending}
-        >
-          {mutation.isPending ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Menyimpan...
-            </>
-          ) : (
-            <>
-              <Save className="h-4 w-4 mr-2" />
-              Simpan Kunjungan
-            </>
-          )}
-        </Button>
-      </form>
-
-      <p className="text-xs text-muted-foreground mt-4 text-center">
-        * Field wajib diisi. Data yang Anda masukkan akan disimpan untuk keperluan administrasi.
-      </p>
-    </CardContent>
+        <p className="text-xs text-muted-foreground mt-4 text-center">
+          * Field wajib diisi. Data yang Anda masukkan akan disimpan untuk keperluan administrasi.
+        </p>
+      </CardContent>
     </Card >
   );
 };
