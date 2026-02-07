@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, TrendingUp, Calendar, BarChart3 } from "lucide-react";
+import { Users, Calendar, BarChart3, PieChart as PieChartIcon } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
 
 // Fungsi untuk mengambil dan memproses data dasbor dari Supabase
 const fetchDashboardData = async () => {
@@ -12,7 +13,7 @@ const fetchDashboardData = async () => {
   // Mengambil semua data tamu dari awal bulan ini
   const { data: guests, error } = await supabase
     .from("guests")
-    .select("created_at")
+    .select("created_at, satisfaction")
     .gte("created_at", startOfMonth.toISOString());
 
   if (error) {
@@ -29,8 +30,24 @@ const fetchDashboardData = async () => {
   // 2. Total Bulan Ini
   const monthlyTotal = guests.length;
 
-  // 3. Rata-rata Harian
-  const averageDaily = monthlyTotal > 0 ? monthlyTotal / today.getDate() : 0;
+  // 3. Kepuasan Layanan (Pie Chart Data)
+  const satisfactionCounts: Record<string, number> = {
+    "Sangat Puas": 0,
+    "Puas": 0,
+    "Cukup Puas": 0,
+    "Kurang Puas": 0,
+    "Tidak Puas": 0,
+  };
+
+  guests.forEach(guest => {
+    if (guest.satisfaction && satisfactionCounts.hasOwnProperty(guest.satisfaction)) {
+      satisfactionCounts[guest.satisfaction]++;
+    }
+  });
+
+  const satisfactionData = Object.entries(satisfactionCounts)
+    .map(([name, value]) => ({ name, value }))
+    .filter(item => item.value > 0); // Only show segments with data
 
   // 4. Tren Mingguan (7 hari terakhir)
   const days = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
@@ -51,10 +68,12 @@ const fetchDashboardData = async () => {
   return {
     todayGuests,
     monthlyTotal,
-    averageDaily,
+    satisfactionData,
     weeklyTrend,
   };
 };
+
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#FF0000']; // You can customize these colors
 
 export const Dashboard = () => {
   const { data, isLoading, error } = useQuery({
@@ -109,20 +128,54 @@ export const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="shadow-soft">
+        <Card className="shadow-soft col-span-1 md:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Rata-rata Harian</CardTitle>
-            <TrendingUp className="h-4 w-4 text-accent" />
+            <CardTitle className="text-sm font-medium">Kepuasan Layanan</CardTitle>
+            <PieChartIcon className="h-4 w-4 text-primary" />
           </CardHeader>
           <CardContent>
-            {isLoading ? <Skeleton className="h-8 w-1/2" /> : <div className="text-2xl font-bold text-accent">{data?.averageDaily.toFixed(1)}</div>}
-            <p className="text-xs text-muted-foreground">
-              Tamu per hari (rata-rata bulan ini)
-            </p>
+            {isLoading ? (
+              <Skeleton className="h-[200px] w-full rounded-full" />
+            ) : (
+              <div className="h-[200px] w-full">
+                {data?.satisfactionData && data.satisfactionData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={data.satisfactionData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={70}
+                        fill="#8884d8"
+                        paddingAngle={2}
+                        dataKey="value"
+                      >
+                        {data.satisfactionData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend
+                        layout="horizontal"
+                        verticalAlign="bottom"
+                        align="center"
+                        iconSize={8}
+                        wrapperStyle={{ fontSize: '10px' }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-muted-foreground text-sm">
+                    Belum ada data
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        <Card className="shadow-soft">
+        <Card className="shadow-soft col-span-1 md:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Tren Mingguan</CardTitle>
             <BarChart3 className="h-4 w-4 text-primary" />
