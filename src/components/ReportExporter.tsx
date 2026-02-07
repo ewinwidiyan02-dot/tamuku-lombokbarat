@@ -137,7 +137,7 @@ export const ReportExporter = () => {
         "Tanggal Kunjungan": format(new Date(guest.created_at), "dd MMMM yyyy, HH:mm", { locale: id }),
       }));
 
-      const worksheet = XLSX.utils.json_to_sheet(formattedData, { origin: "A3" });
+      const worksheet = XLSX.utils.json_to_sheet(formattedData, { origin: "A3" } as XLSX.JSON2SheetOpts);
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Data Tamu");
 
